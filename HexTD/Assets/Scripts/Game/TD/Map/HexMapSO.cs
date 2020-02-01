@@ -31,6 +31,6 @@ namespace Game.TD.Map
         public int Height { get => _height; }
         public float HexEdgeLength { get => _hexEdgeLength; }
         public float SpaceBetweenHexes { get => _spaceBetweenHexes; }
-        public float CurvesDensity { get => Mathf.FloorToInt(_curvesDensity * _width / 2); }
+        public int NumberOfCurves { get => Mathf.FloorToInt(_curvesDensity * _width); }
     }
 }
