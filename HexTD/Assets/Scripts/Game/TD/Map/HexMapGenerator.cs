@@ -104,31 +104,32 @@ namespace Game.TD.Map
             }
 
             GameObject curvePathHex = Instantiate(prefab, _hexParent);
-            _lastPos.x += Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes;
-            curvePathHex.transform.position = _lastPos;
-
             GameObject pathGO = curvePathHex.transform.GetChild(1).gameObject;
             switch (_pathEntrancePositionForThisHex)
             {
                 case (PathEntrancePosition.Upper):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 60);
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes) / 2;
+                    _lastPos.z -= _hexEdgeLength * _distanceBetweenHexesX;
                     break;
                 case (PathEntrancePosition.Center):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 0);
+                    _lastPos.x += Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes;
                     break;
                 case (PathEntrancePosition.Lower):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, -60);
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes) / 2;
+                    _lastPos.z += _hexEdgeLength * _distanceBetweenHexesX;
                     break;
                 default:
                     break;
             }
+            curvePathHex.transform.position = _lastPos;
         }
 
         private void SpawnStraightPathHex()
         {
             GameObject pathHex = Instantiate(_straightPathHexPrefab, _hexParent);
-            _lastPos.x += Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes;
-            pathHex.transform.position = _lastPos;
             pathHex.name = "Straight path hex";
 
             GameObject pathGO = pathHex.transform.GetChild(1).gameObject;
@@ -136,16 +137,22 @@ namespace Game.TD.Map
             {
                 case (PathEntrancePosition.Upper):
                     pathGO.transform.rotation = Quaternion.Euler(-90,0,0);
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes)/2;
+                    _lastPos.z -= _hexEdgeLength * _distanceBetweenHexesX;
                     break;
                 case (PathEntrancePosition.Center):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 120);
+                    _lastPos.x += Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes;
                     break;
                 case (PathEntrancePosition.Lower):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 60);
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes)/2;
+                    _lastPos.z += _hexEdgeLength * _distanceBetweenHexesX;
                     break;
                 default:
                     break;
             }
+            pathHex.transform.position = _lastPos;
         }
 
         private void SpawnPathEntrance()
