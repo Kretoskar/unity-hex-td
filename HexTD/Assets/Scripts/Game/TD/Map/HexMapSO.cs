@@ -27,10 +27,15 @@ namespace Game.TD.Map
         [Range(0, 1)]
         private float _curvesDensity;
 
+        [SerializeField]
+        [Range(0, 1)]
+        private float _emptyHexDensity;
+
         public int Width { get => _width; }
         public int Height { get => _height; }
         public float HexEdgeLength { get => _hexEdgeLength; }
         public float SpaceBetweenHexes { get => _spaceBetweenHexes; }
         public int NumberOfCurves { get => Mathf.FloorToInt(_curvesDensity * _width); }
+        public int EmptyHexDensity { get => Mathf.FloorToInt(_emptyHexDensity * _height); }
     }
 }

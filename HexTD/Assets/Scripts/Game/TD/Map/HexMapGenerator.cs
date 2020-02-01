@@ -21,23 +21,60 @@ namespace Game.TD.Map
         private int _width;
         private int _height;
         private int _numberOfCurves;
+        private int _emptyHexDensity;
         private float _hexEdgeLength;
         private float _spaceBetweenHexes;
 
         private float _distanceBetweenHexesX = 1.5f;
         private Vector3 _lastPos;
-        private Transform _hexParent;
+        private Transform _hexPathParent;
+        private Transform _emptyHexParent;
         private PathEntrancePosition _currentPathEntrancePosition;
 
         private void Awake()
         {
-            _hexParent = transform;
+            _hexPathParent = transform;
             InjectDataFromScriptableObjects();
         }
 
         private void Start()
         {
+            GameObject hexParentGO = new GameObject("Hex path");
+            hexParentGO.transform.parent = transform;
+            _hexPathParent = hexParentGO.transform;
+
+            GameObject emptyHexParentGO = new GameObject("Empty hex");
+            emptyHexParentGO.transform.parent = transform;
+            _emptyHexParent = emptyHexParentGO.transform;
+
             SpawnPath();
+            SpawnEmptyHexes();
+        }
+
+        private void SpawnEmptyHexes()
+        {
+            foreach (Transform pathHex in _hexPathParent)
+            {
+                int hexCount = UnityEngine.Random.Range(0, _emptyHexDensity);
+                int hexToTop = UnityEngine.Random.Range(0, hexCount);
+                for (int i = 0; i < hexCount; i++)
+                {
+                    GameObject emptyHex = Instantiate(_emptyHexPrefab, _emptyHexParent);
+                    emptyHex.name = "Empty hex";
+                    float xPos = pathHex.position.x;
+                    float ypos = 0;
+                    float zPos;
+                    if (i < hexToTop)
+                    {
+                        zPos = pathHex.position.z + i * (_hexEdgeLength * Mathf.Sqrt(3));
+                    }
+                    else
+                    {
+                        zPos = pathHex.position.z - (i - hexToTop) * (_hexEdgeLength * Mathf.Sqrt(3));
+                    }
+                    emptyHex.transform.position = new Vector3(xPos, ypos, zPos);
+                }
+            }
         }
 
         private void SpawnPath()
@@ -103,7 +140,7 @@ namespace Game.TD.Map
                 prefab = _curveDownPathHexPrefab;
             }
 
-            GameObject curvePathHex = Instantiate(prefab, _hexParent);
+            GameObject curvePathHex = Instantiate(prefab, _hexPathParent);
             GameObject pathGO = curvePathHex.transform.GetChild(1).gameObject;
             switch (_pathEntrancePositionForThisHex)
             {
@@ -129,7 +166,7 @@ namespace Game.TD.Map
 
         private void SpawnStraightPathHex()
         {
-            GameObject pathHex = Instantiate(_straightPathHexPrefab, _hexParent);
+            GameObject pathHex = Instantiate(_straightPathHexPrefab, _hexPathParent);
             pathHex.name = "Straight path hex";
 
             GameObject pathGO = pathHex.transform.GetChild(1).gameObject;
@@ -157,7 +194,7 @@ namespace Game.TD.Map
 
         private void SpawnPathEntrance()
         {
-            GameObject hex = Instantiate(_straightPathHexPrefab, _hexParent);
+            GameObject hex = Instantiate(_straightPathHexPrefab, _hexPathParent);
             hex.name = "Path entrance hes";
             _lastPos = CalculateEntrancePosition();
             hex.transform.position = _lastPos;
@@ -188,6 +225,7 @@ namespace Game.TD.Map
             _hexEdgeLength = _hexMapSO.HexEdgeLength;
             _spaceBetweenHexes = _hexMapSO.SpaceBetweenHexes;
             _numberOfCurves = _hexMapSO.NumberOfCurves;
+            _emptyHexDensity = _hexMapSO.EmptyHexDensity;
         }
 
         private Vector3 CalculateEntrancePosition()
