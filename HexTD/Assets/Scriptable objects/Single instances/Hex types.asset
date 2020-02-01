@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ccd9198b40444b448e44b8802116c2a, type: 3}
+  m_Name: Hex types
+  m_EditorClassIdentifier: 
+  _emptyHexPrefab: {fileID: 7339506046031460948, guid: e24059bb2f1f04043a8a2e09b38fb684,
+    type: 3}
+  _straightPathHexPrefab: {fileID: 7339506046031460948, guid: aa44abe7abedd3a47aaf42efd746ec30,
+    type: 3}
+  _curveUpPathHexPrefab: {fileID: 7339506046031460948, guid: 45e9a358ed3cb2d49b28f7642449203d,
+    type: 3}
+  _curveDownPathHexPrefab: {fileID: 7339506046031460948, guid: 773dd964c0caa594caed4c066b20aa86,
+    type: 3}

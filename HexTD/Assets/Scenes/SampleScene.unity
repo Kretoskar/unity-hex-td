@@ -150,12 +150,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c0ce5a95e0cf62469c2b5d9e94ee009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hexPrefab: {fileID: 7339506046031460948, guid: e24059bb2f1f04043a8a2e09b38fb684,
-    type: 3}
-  _width: 12
-  _height: 12
-  _hexEdgeLength: 1
-  _spaceBetweenHexes: 0.03
+  _hexTypesSO: {fileID: 11400000, guid: fc1f103c3014144438f460796ec2736a, type: 2}
+  _hexMapSO: {fileID: 11400000, guid: 3c5edf88926a794428fc2460b53deafd, type: 2}
 --- !u!4 &446071610
 Transform:
   m_ObjectHideFlags: 0
@@ -338,8 +334,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.31819597, y: 0.32479727, z: -0.117052406, w: 0.88292515}
-  m_LocalPosition: {x: -3.694336, y: 9.358055, z: -5.018673}
+  m_LocalRotation: {x: 0.73921084, y: -0.0000027399512, z: -0.000002183486, w: 0.673474}
+  m_LocalPosition: {x: 8.904807, y: 19.85566, z: 6.201333}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

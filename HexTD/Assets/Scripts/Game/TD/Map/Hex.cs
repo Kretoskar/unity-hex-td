@@ -17,7 +17,7 @@ namespace Game.TD.Map
 
         private void OnMouseOver()
         {
-            _material.color = Color.yellow;
+            _material.color = Color.red;
         }
 
         private void OnMouseExit()
