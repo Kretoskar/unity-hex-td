@@ -77,48 +77,108 @@ namespace Game.TD.Map
         {
             for (int i = 0; i < _hexPathParent.childCount; i++)
             {
-                print(i);
-                float xPos = 0, yPos = 0, zPos = 0;
-
-                Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
-                Transform thisHex = _hexPathParent.GetChild(i);
-                Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
-
-                if (nextHex == null) continue;
-                if (previousHex == null) continue;
-                
-                if(Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
+                int emptyHexCount = UnityEngine.Random.Range(0, _emptyHexDensity);
+                int hexesToTopCount = UnityEngine.Random.Range(0, emptyHexCount);
+                print("e" + emptyHexCount + "tt" +hexesToTopCount);
+                for (int j = 0; j < emptyHexCount; j++)
                 {
-                    if(thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
+                    if (j < hexesToTopCount)
                     {
-                        //This is a lower left to right curve path hex
-                        xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
-                        yPos = 0;
-                        zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
-                        SpawnEmptyHex(new Vector3(xPos,yPos,zPos));
-                    }
-                    //This is a straight path hex
-                    xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
-                    yPos = 0;
-                    zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
-                }
-                else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
-                {
-                    if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
-                    //This is a straight path going upwards
-                    xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2  - _spaceBetweenHexes;
-                    yPos = 0;
-                    zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
-                }
-                else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
-                {
-                    //This is a straight path going downwards
-                    xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
-                    yPos = 0;
-                    zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
-                }
+                        //Spawn to top
+                        if (j == 0)
+                        {
+                            float xPos = 0, yPos = 0, zPos = 0;
 
-                SpawnEmptyHex(new Vector3(xPos,yPos,zPos));
+                            Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
+                            Transform thisHex = _hexPathParent.GetChild(i);
+                            Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
+
+                            if (nextHex == null) continue;
+                            if (previousHex == null) continue;
+
+                            if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
+                            {
+                                if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
+                                {
+                                    //This is a lower left to right curve path hex
+                                    xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
+                                    yPos = 0;
+                                    zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                                    SpawnEmptyHex(new Vector3(xPos, yPos, zPos));
+                                }
+                                //This is a straight path hex
+                                xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
+                                yPos = 0;
+                                zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                            }
+                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
+                            {
+                                if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
+                                                                                                                      //This is a straight path going upwards
+                                xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
+                                yPos = 0;
+                                zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                            }
+                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
+                            {
+                                //This is a straight path going downwards
+                                xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
+                                yPos = 0;
+                                zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                            }
+
+                            SpawnEmptyHex(new Vector3(xPos, yPos, zPos));
+                        }
+                    }
+                    else
+                    {
+                        //Spawn to bottom
+                        if (j == emptyHexCount - hexesToTopCount - 1)
+                        {
+                            float xPos = 0, yPos = 0, zPos = 0;
+
+                            Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
+                            Transform thisHex = _hexPathParent.GetChild(i);
+                            Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
+
+                            if (nextHex == null) continue;
+                            if (previousHex == null) continue;
+
+                            if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
+                            {
+                                if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
+                                {
+                                    //This is a lower left to right curve path hex
+                                    xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
+                                    yPos = 0;
+                                    zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
+                                    SpawnEmptyHex(new Vector3(xPos, yPos, zPos));
+                                }
+                                //This is a straight path hex
+                                xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
+                                yPos = 0;
+                                zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
+                            }
+                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
+                            {
+                                if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
+                                                                                                                      //This is a straight path going upwards
+                                xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
+                                yPos = 0;
+                                zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
+                            }
+                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
+                            {
+                                //This is a straight path going downwards
+                                xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
+                                yPos = 0;
+                                zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
+                            }
+
+                            SpawnEmptyHex(new Vector3(xPos, yPos, zPos));
+                        }
+                    }
+                }
             }
         }
 
