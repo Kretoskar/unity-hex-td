@@ -17,4 +17,4 @@ MonoBehaviour:
   _hexEdgeLength: 1
   _spaceBetweenHexes: 0.03
   _curvesDensity: 1
-  _emptyHexDensity: 1
+  _emptyHexDensity: 0
