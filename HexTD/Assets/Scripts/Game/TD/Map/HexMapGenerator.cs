@@ -43,38 +43,12 @@ namespace Game.TD.Map
             hexParentGO.transform.parent = transform;
             _hexPathParent = hexParentGO.transform;
 
-            GameObject emptyHexParentGO = new GameObject("Empty hex");
+            GameObject emptyHexParentGO = new GameObject("Empty hexes");
             emptyHexParentGO.transform.parent = transform;
             _emptyHexParent = emptyHexParentGO.transform;
 
             SpawnPath();
             SpawnEmptyHexes();
-        }
-
-        private void SpawnEmptyHexes()
-        {
-            foreach (Transform pathHex in _hexPathParent)
-            {
-                int hexCount = UnityEngine.Random.Range(0, _emptyHexDensity);
-                int hexToTop = UnityEngine.Random.Range(0, hexCount);
-                for (int i = 0; i < hexCount; i++)
-                {
-                    GameObject emptyHex = Instantiate(_emptyHexPrefab, _emptyHexParent);
-                    emptyHex.name = "Empty hex";
-                    float xPos = pathHex.position.x;
-                    float ypos = 0;
-                    float zPos;
-                    if (i < hexToTop)
-                    {
-                        zPos = pathHex.position.z + i * (_hexEdgeLength * Mathf.Sqrt(3));
-                    }
-                    else
-                    {
-                        zPos = pathHex.position.z - (i - hexToTop) * (_hexEdgeLength * Mathf.Sqrt(3));
-                    }
-                    emptyHex.transform.position = new Vector3(xPos, ypos, zPos);
-                }
-            }
         }
 
         private void SpawnPath()
@@ -97,6 +71,63 @@ namespace Game.TD.Map
                     SpawnStraightPathHex();
                 }
             } while (_lastPos.x < (_width - 1) * _distanceBetweenHexesX);
+        }
+
+        private void SpawnEmptyHexes()
+        {
+            for (int i = 0; i < _hexPathParent.childCount; i++)
+            {
+                print(i);
+                float xPos = 0, yPos = 0, zPos = 0;
+
+                Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
+                Transform thisHex = _hexPathParent.GetChild(i);
+                Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
+
+                if (nextHex == null) continue;
+                if (previousHex == null) continue;
+                
+                if(Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
+                {
+                    if(thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
+                    {
+                        //This is a lower left to right curve path hex
+                        xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
+                        yPos = 0;
+                        zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                        SpawnEmptyHex(new Vector3(xPos,yPos,zPos));
+                    }
+                    //This is a straight path hex
+                    xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
+                    yPos = 0;
+                    zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                }
+                else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
+                {
+                    if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
+                    //This is a straight path going upwards
+                    xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2  - _spaceBetweenHexes;
+                    yPos = 0;
+                    zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                }
+                else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
+                {
+                    //This is a straight path going downwards
+                    xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
+                    yPos = 0;
+                    zPos = thisHex.transform.position.z + 1.5f * _hexEdgeLength + _spaceBetweenHexes;
+                }
+
+                SpawnEmptyHex(new Vector3(xPos,yPos,zPos));
+            }
+        }
+
+        private void SpawnEmptyHex(Vector3 position)
+        {
+            GameObject emptyHex = Instantiate(_emptyHexPrefab, _emptyHexParent);
+            emptyHex.name = "Empty hex";
+            emptyHex.transform.position = position;
+            emptyHex.transform.GetChild(0).rotation = Quaternion.Euler(-90,0,0);
         }
 
         private void SpawnCurvedPathHex()
@@ -146,7 +177,7 @@ namespace Game.TD.Map
             {
                 case (PathEntrancePosition.Upper):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 60);
-                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes) / 2;
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
                     _lastPos.z -= _hexEdgeLength * _distanceBetweenHexesX;
                     break;
                 case (PathEntrancePosition.Center):
@@ -155,7 +186,7 @@ namespace Game.TD.Map
                     break;
                 case (PathEntrancePosition.Lower):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, -60);
-                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes) / 2;
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
                     _lastPos.z += _hexEdgeLength * _distanceBetweenHexesX;
                     break;
                 default:
@@ -174,8 +205,8 @@ namespace Game.TD.Map
             {
                 case (PathEntrancePosition.Upper):
                     pathGO.transform.rotation = Quaternion.Euler(-90,0,0);
-                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes)/2;
-                    _lastPos.z -= _hexEdgeLength * _distanceBetweenHexesX;
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength)/2 + +_spaceBetweenHexes;
+                    _lastPos.z -= _hexEdgeLength * _distanceBetweenHexesX + _spaceBetweenHexes;
                     break;
                 case (PathEntrancePosition.Center):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 120);
@@ -183,8 +214,8 @@ namespace Game.TD.Map
                     break;
                 case (PathEntrancePosition.Lower):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 60);
-                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes)/2;
-                    _lastPos.z += _hexEdgeLength * _distanceBetweenHexesX;
+                    _lastPos.x += (Mathf.Sqrt(3) * _hexEdgeLength)/2 + _spaceBetweenHexes;
+                    _lastPos.z += _hexEdgeLength * _distanceBetweenHexesX + _spaceBetweenHexes;
                     break;
                 default:
                     break;
@@ -237,25 +268,6 @@ namespace Game.TD.Map
             return new Vector3(xPos,yPos,zPos);
         }
 
-        private void SpawnEmptyMap()
-        {
-            for(int i = 0; i < _width; i++)
-                for(int j = 0; j < _height; j++)
-                {
-                    //Instantiate hex
-                    GameObject hex = Instantiate(_emptyHexPrefab, transform);
-
-                    //Set hex position
-                    float xPos = i * (1.5f * _hexEdgeLength + _spaceBetweenHexes);
-                    float yPos = 0;
-                    float zPos = j * (Mathf.Sqrt(3) * _hexEdgeLength + _spaceBetweenHexes);
-                    zPos += i % 2 == 0 ? _hexEdgeLength * Mathf.Sqrt(3) / 2 : 0;
-                    hex.transform.position = new Vector3(xPos, yPos, zPos);
-
-                    //Set other hex settings
-                    hex.name = $"Hex: {i * _width +j}";
-                }
-        }
         private enum PathEntrancePosition
         {
             Upper,
