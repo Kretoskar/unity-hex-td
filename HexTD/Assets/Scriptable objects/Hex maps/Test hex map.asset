@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 12
   _hexEdgeLength: 1
-  _spaceBetweenHexes: 0.03
+  _spaceBetweenHexes: 0.1
   _curvesDensity: 1
   _minEmptyHexes: 0
   _maxEmptyHexes: 5

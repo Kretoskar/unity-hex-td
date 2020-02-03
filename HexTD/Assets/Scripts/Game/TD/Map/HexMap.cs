@@ -44,7 +44,7 @@ namespace Game.TD.Map
         public Vector3 HexPositionRight(Vector2 indexes)
         {
             float xPos = 0, yPos = 0, zPos = 0;
-            xPos = indexes.x * _h * 2 + indexes.y * _h + indexes.x * _spaceBetweenHexes + _spaceBetweenHexes / 2;
+            xPos = indexes.x * _h * 2 + indexes.y * _h + indexes.x * _spaceBetweenHexes + indexes.y * _spaceBetweenHexes / 2;
             zPos = indexes.y * _y + indexes.y * _spaceBetweenHexes;
             return new Vector3(xPos, yPos, zPos);
         }
@@ -52,7 +52,7 @@ namespace Game.TD.Map
         public Vector3 HexPositionLeft(Vector2 indexes)
         {
             float xPos = 0, yPos = 0, zPos = 0;
-            xPos = indexes.x * _h * 2 + indexes.y * _h - _spaceBetweenHexes + _spaceBetweenHexes / 2;
+            xPos = indexes.x * _h * 2 + indexes.y * _h + indexes.x * _spaceBetweenHexes + indexes.y * _spaceBetweenHexes / 2;
             zPos = indexes.y * _y + indexes.y * _spaceBetweenHexes;
             return new Vector3(xPos, yPos, zPos);
         }
