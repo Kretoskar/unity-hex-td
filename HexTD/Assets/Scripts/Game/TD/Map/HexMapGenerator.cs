@@ -40,14 +40,6 @@ namespace Game.TD.Map
             InjectDataFromScriptableObject();
         }
 
-        private void InjectDataFromScriptableObject()
-        {
-            _emptyHexPrefab = _hexTypesSO.EmptyHexPrefab;
-            _straightPathHexPrefab = _hexTypesSO.StraightPathHexPrefab;
-            _curveUpPathHexPrefab = _hexTypesSO.CurveUpPathHexPrefab;
-            _curveDownPathHexPrefab = _hexTypesSO.CurveDownPathHexPrefab;
-        }
-
         private void Start()
         {
             GameObject hexParentGO = new GameObject("Hex path");
@@ -61,6 +53,14 @@ namespace Game.TD.Map
             GenerateHexMapObject();
             SpawnPath();
             SpawnEmptyHexes();
+        }
+
+        private void InjectDataFromScriptableObject()
+        {
+            _emptyHexPrefab = _hexTypesSO.EmptyHexPrefab;
+            _straightPathHexPrefab = _hexTypesSO.StraightPathHexPrefab;
+            _curveUpPathHexPrefab = _hexTypesSO.CurveUpPathHexPrefab;
+            _curveDownPathHexPrefab = _hexTypesSO.CurveDownPathHexPrefab;
         }
 
         private void GenerateHexMapObject()
@@ -199,187 +199,78 @@ namespace Game.TD.Map
                 {
                     if (j < hexesToTopCount)
                     {
-                        //Spawn the first hex to the top
-                        if (j == 0)
-                        {
-                            Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
-                            Transform thisHex = _hexPathParent.GetChild(i);
-                            Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
-
-                            HexMap.MoveDirection moveDir = 0;
-
-                            if (nextHex == null) continue;
-                            if (previousHex == null) continue;
-
-                            if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
-                            {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
-                                {
-                                    //This is a lower left to right curve path hex
-                                    Vector2 pos = Vector2.zero;
-                                    _hexMap.MoveIndexes(ref pos, HexMap.MoveDirection.TopLeft);
-                                    SpawnEmptyHex(thisHex.transform.position + _hexMap.HexPosition(pos));
-                                }
-                                moveDir = HexMap.MoveDirection.TopRight;
-                            }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
-                            {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
-                                //This is a straight path going upwards
-                                moveDir = HexMap.MoveDirection.TopLeft;
-                            }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
-                            {
-                                //This is a straight path going downwards
-                                moveDir = HexMap.MoveDirection.TopRight;
-                            }
-                            SpawnEmptyHex(thisHex.transform.position + _hexMap.MoveVector(moveDir));
-                        }
                         //Spawn the other hexes to the top
-                        else
+                        float xPos = 0, yPos = 0, zPos = 0;
+
+                        Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
+                        Transform thisHex = _hexPathParent.GetChild(i);
+                        Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
+
+                        HexMap.MoveDirection moveDir = 0;
+
+                        if (nextHex == null) continue;
+                        if (previousHex == null) continue;
+
+                        if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
                         {
-                            float xPos = 0, yPos = 0, zPos = 0;
-
-                            Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
-                            Transform thisHex = _hexPathParent.GetChild(i);
-                            Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
-
-                            HexMap.MoveDirection moveDir = 0;
-
-                            if (nextHex == null) continue;
-                            if (previousHex == null) continue;
-
-                            if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
+                            if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
                             {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
-                                {
-                                    //This is a lower left to right curve path hex
-                                    Vector2 pos = Vector2.zero;
-                                    _hexMap.MoveIndexes(ref pos, HexMap.MoveDirection.TopLeft);
-                                    SpawnEmptyHex(thisHex.transform.position + j * _hexMap.HexPosition(pos));
-                                }
-                                moveDir = HexMap.MoveDirection.TopRight;
+                                //This is a lower left to right curve path hex
+                                Vector2 pos = Vector2.zero;
+                                _hexMap.MoveIndexes(ref pos, HexMap.MoveDirection.TopLeft);
+                                SpawnEmptyHex(thisHex.transform.position + j * _hexMap.HexPosition(pos));
                             }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
-                            {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
-                                //This is a straight path going upwards
-                                moveDir = HexMap.MoveDirection.TopLeft;
-                            }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
-                            {
-                                moveDir = HexMap.MoveDirection.TopRight;
-                            }
-                            SpawnEmptyHex(thisHex.transform.position + j * _hexMap.MoveVector(moveDir));
+                            moveDir = HexMap.MoveDirection.TopRight;
                         }
+                        else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
+                        {
+                            if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
+                            //This is a straight path going upwards
+                            moveDir = HexMap.MoveDirection.TopLeft;
+                        }
+                        else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
+                        {
+                            moveDir = HexMap.MoveDirection.TopRight;
+                        }
+                        SpawnEmptyHex(thisHex.transform.position + j * _hexMap.MoveVector(moveDir));
                     }
                     else
                     {
-                        //Spawn first to bottom
-                        if (j == emptyHexCount - hexesToTopCount - 1)
+                        float xPos = 0, yPos = 0, zPos = 0;
+
+                        Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
+                        Transform thisHex = _hexPathParent.GetChild(i);
+                        Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
+
+                        HexMap.MoveDirection moveDir = 0;
+
+                        if (nextHex == null) continue;
+                        if (previousHex == null) continue;
+
+                        if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
                         {
-                            float xPos = 0, yPos = 0, zPos = 0;
-
-                            Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
-                            Transform thisHex = _hexPathParent.GetChild(i);
-                            Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
-
-                            HexMap.MoveDirection moveDir = 0;
-
-                            if (nextHex == null) continue;
-                            if (previousHex == null) continue;
-
-                            if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
+                            if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
                             {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
-                                {
-                                    //This is a lower left to right curve path hex
-                                    //xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
-                                    //yPos = 0;
-                                    //zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
-                                    //SpawnEmptyHex(new Vector3(xPos, yPos, zPos));
-                                    Vector2 pos = Vector2.zero;
-                                    _hexMap.MoveIndexes(ref pos, HexMap.MoveDirection.LowLeft);
-                                    SpawnEmptyHex(thisHex.transform.position + _hexMap.HexPosition(pos));
-                                }
-                                //This is a straight path hex
-                                //xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
-                                //yPos = 0;
-                                //zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
-                                moveDir = HexMap.MoveDirection.LowRight;
+                                //This is a lower left to right curve path hex
+                                Vector2 pos = Vector2.zero;
+                                _hexMap.MoveIndexes(ref pos, HexMap.MoveDirection.LowLeft);
+                                SpawnEmptyHex(thisHex.transform.position + (j - hexesToTopCount) * _hexMap.HexPosition(pos));
                             }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
-                            {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
-                                                                                                                      //This is a straight path going upwards
-                                //xPos = thisHex.transform.position.x - (Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes;
-                                //yPos = 0;
-                                //zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
+                            //This is a straight path hex
+                            moveDir = HexMap.MoveDirection.LowRight;
+                        }
+                        else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
+                        {
+                            if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
+                            //This is a straight path going upwards
                                 moveDir = HexMap.MoveDirection.LowLeft;
-                            }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
-                            {
-                                //This is a straight path going downwards
-                                //xPos = thisHex.transform.position.x + (Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes;
-                                //yPos = 0;
-                                //zPos = thisHex.transform.position.z - 1.5f * _hexEdgeLength - _spaceBetweenHexes;
-                                moveDir = HexMap.MoveDirection.LowRight;
-                            }
-                            SpawnEmptyHex(thisHex.transform.position + _hexMap.MoveVector(moveDir));
                         }
-
-                        //Spawn others to bottom
-                        else
+                        else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
                         {
-                            float xPos = 0, yPos = 0, zPos = 0;
-
-                            Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
-                            Transform thisHex = _hexPathParent.GetChild(i);
-                            Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
-
-                            HexMap.MoveDirection moveDir = 0;
-
-                            if (nextHex == null) continue;
-                            if (previousHex == null) continue;
-
-                            if (Mathf.Abs(thisHex.transform.position.z - nextHex.transform.position.z) < 0.1f)
-                            {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z > 0.1f)
-                                {
-                                    //This is a lower left to right curve path hex
-                                    //xPos = thisHex.transform.position.x - (j - hexesToTopCount) * (Mathf.Sqrt(3) * _hexEdgeLength / 2 - _spaceBetweenHexes);
-                                    //yPos = 0;
-                                    //zPos = thisHex.transform.position.z - (j - hexesToTopCount) * (1.5f * _hexEdgeLength - _spaceBetweenHexes);
-                                    //SpawnEmptyHex(new Vector3(xPos, yPos, zPos));
-                                    Vector2 pos = Vector2.zero;
-                                    _hexMap.MoveIndexes(ref pos, HexMap.MoveDirection.LowLeft);
-                                    SpawnEmptyHex(thisHex.transform.position + (j - hexesToTopCount) * _hexMap.HexPosition(pos));
-                                }
-                                //This is a straight path hex
-                                //xPos = thisHex.transform.position.x + (j - hexesToTopCount) * ((Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes);
-                                //yPos = 0;
-                                //zPos = thisHex.transform.position.z - (j - hexesToTopCount) * (1.5f * _hexEdgeLength - _spaceBetweenHexes);
-                                moveDir = HexMap.MoveDirection.LowRight;
-                            }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) < -0.1f)
-                            {
-                                if (thisHex.transform.position.z - previousHex.transform.position.z < 0.1f) continue; //This is in a pothole
-                                //This is a straight path going upwards
-                                //xPos = thisHex.transform.position.x - (j - hexesToTopCount) * ((Mathf.Sqrt(3) * _hexEdgeLength) / 2 - _spaceBetweenHexes);
-                                //yPos = 0;
-                                //zPos = thisHex.transform.position.z - (j - hexesToTopCount) * (1.5f * _hexEdgeLength - _spaceBetweenHexes);
-                                 moveDir = HexMap.MoveDirection.LowLeft;
-                            }
-                            else if ((thisHex.transform.position.z - nextHex.transform.position.z) > 0.1f)
-                            {
-                                //This is a straight path going downwards
-                                //xPos = thisHex.transform.position.x + (j - hexesToTopCount) * ((Mathf.Sqrt(3) * _hexEdgeLength) / 2 + _spaceBetweenHexes);
-                                //yPos = 0;
-                                //zPos = thisHex.transform.position.z - (j - hexesToTopCount) * (1.5f * _hexEdgeLength - _spaceBetweenHexes);
-                                moveDir = HexMap.MoveDirection.LowRight;
-                            }
-                            SpawnEmptyHex(thisHex.transform.position + (j - hexesToTopCount) * _hexMap.MoveVector(moveDir));
+                            //This is a straight path going downwards
+                            moveDir = HexMap.MoveDirection.LowRight;
                         }
+                        SpawnEmptyHex(thisHex.transform.position + (j - hexesToTopCount) * _hexMap.MoveVector(moveDir));
                     }
                 }
             }

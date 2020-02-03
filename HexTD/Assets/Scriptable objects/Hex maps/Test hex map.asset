@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c7d519febb43c479b194ed3ae7340f, type: 3}
   m_Name: Test hex map
   m_EditorClassIdentifier: 
-  _width: 12
+  _width: 55
   _hexEdgeLength: 1
   _spaceBetweenHexes: 0.1
   _curvesDensity: 1
-  _minEmptyHexes: 0
-  _maxEmptyHexes: 5
+  _minEmptyHexes: 5
+  _maxEmptyHexes: 10
   _emptyHexDensityRandomization: 0.247
