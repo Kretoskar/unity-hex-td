@@ -27,10 +27,6 @@ namespace Game.TD.Map
         private GameObject _straightPathHexPrefab;
         private GameObject _curveUpPathHexPrefab;
         private GameObject _curveDownPathHexPrefab;
-        private int _width;
-        private int _numberOfCurves;
-        private float _hexEdgeLength;
-        private float _spaceBetweenHexes;
 
         #endregion
 
@@ -78,7 +74,7 @@ namespace Game.TD.Map
 
             //Spawn rest
             for(int i = 0; i < _hexMap.Width; i++) {
-                if (curvesPositions.Contains((int)_lastPos.x))
+                if (curvesPositions.Contains(i))
                 {
                     SpawnCurvedPathHex();
                 }
@@ -87,6 +83,7 @@ namespace Game.TD.Map
                     //Spawn straight path
                     SpawnStraightPathHex();
                 }
+                print(_lastPos.x);
             }
         }
 
@@ -199,9 +196,7 @@ namespace Game.TD.Map
                 {
                     if (j < hexesToTopCount)
                     {
-                        //Spawn the other hexes to the top
-                        float xPos = 0, yPos = 0, zPos = 0;
-
+                        //Spawn hexes to top
                         Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
                         Transform thisHex = _hexPathParent.GetChild(i);
                         Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);
@@ -236,8 +231,7 @@ namespace Game.TD.Map
                     }
                     else
                     {
-                        float xPos = 0, yPos = 0, zPos = 0;
-
+                        //Spawn hexes to bottom
                         Transform previousHex = i == 0 ? null : _hexPathParent.GetChild(i - 1);
                         Transform thisHex = _hexPathParent.GetChild(i);
                         Transform nextHex = i == _hexPathParent.childCount - 1 ? null : _hexPathParent.GetChild(i + 1);

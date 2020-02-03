@@ -17,5 +17,5 @@ MonoBehaviour:
   _spaceBetweenHexes: 0.1
   _curvesDensity: 1
   _minEmptyHexes: 5
-  _maxEmptyHexes: 10
-  _emptyHexDensityRandomization: 0.247
+  _maxEmptyHexes: 5
+  _emptyHexDensityRandomization: 0

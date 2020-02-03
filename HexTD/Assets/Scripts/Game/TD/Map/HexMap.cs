@@ -112,8 +112,11 @@ namespace Game.TD.Map
             for (int i = 0; i < _numberOfCurves; i++)
             {
                 int curvePosition = Random.Range(0, Width);
-                if(!curvesPositions.Contains(curvePosition))
-                    curvesPositions.Add(UnityEngine.Random.Range(0, Width));
+                if (!curvesPositions.Contains(curvePosition))
+                {
+                    int c = Random.Range(0, _width);
+                    curvesPositions.Add(c);
+                }
             }
             return curvesPositions;
         }
