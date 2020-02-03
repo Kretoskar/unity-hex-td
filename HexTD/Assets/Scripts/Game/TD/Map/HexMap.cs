@@ -41,15 +41,7 @@ namespace Game.TD.Map
             _spaceBetweenHexes = spaceBetweenHexes;
         }
 
-        public Vector3 HexPositionRight(Vector2 indexes)
-        {
-            float xPos = 0, yPos = 0, zPos = 0;
-            xPos = indexes.x * _h * 2 + indexes.y * _h + indexes.x * _spaceBetweenHexes + indexes.y * _spaceBetweenHexes / 2;
-            zPos = indexes.y * _y + indexes.y * _spaceBetweenHexes;
-            return new Vector3(xPos, yPos, zPos);
-        }
-        
-        public Vector3 HexPositionLeft(Vector2 indexes)
+        public Vector3 HexPosition(Vector2 indexes)
         {
             float xPos = 0, yPos = 0, zPos = 0;
             xPos = indexes.x * _h * 2 + indexes.y * _h + indexes.x * _spaceBetweenHexes + indexes.y * _spaceBetweenHexes / 2;
@@ -65,32 +57,26 @@ namespace Game.TD.Map
             {
                 case (MoveDirection.TopRight):
                     indexes.y += 1;
-                    pos = HexPositionRight(indexes);
                     break;
                 case (MoveDirection.Right):
                     indexes.x += 1;
-                    pos = HexPositionRight(indexes);
                     break;
                 case (MoveDirection.LowRight):
                     indexes.x += 1;
                     indexes.y -= 1;
-                    pos = HexPositionRight(indexes);
                     break;
                 case (MoveDirection.LowLeft):
                     indexes.y -= 1;
-                    pos = HexPositionLeft(indexes);
                     break;
                 case (MoveDirection.Left):
                     indexes.x -= 1;
-                    pos = HexPositionLeft(indexes);
                     break;
                 case (MoveDirection.TopLeft):
                     indexes.x -= 1;
                     indexes.y += 1;
-                    pos = HexPositionLeft(indexes);
                     break;
             }
-            return pos;
+            return HexPosition(indexes);
         }
 
         public void MoveIndexes (ref Vector2 position, MoveDirection dir)
