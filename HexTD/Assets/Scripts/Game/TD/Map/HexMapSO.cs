@@ -7,13 +7,11 @@ namespace Game.TD.Map
     [CreateAssetMenu(menuName = "ScriptableObjects/Hex map", fileName = "Hex map")]
     public class HexMapSO : ScriptableObject
     {
-        [SerializeField]
-        [Range(10, 100)]
-        private int _width = 12;
+        [Header("Map")]
 
         [SerializeField]
         [Range(10, 100)]
-        private int _height = 12;
+        private int _width = 12;
 
         [SerializeField]
         [Range(0.1f, 10)]
@@ -23,19 +21,37 @@ namespace Game.TD.Map
         [Range(0.01f, 0.1f)]
         private float _spaceBetweenHexes = 0.03f;
 
+        [Header("Path")]
+
         [SerializeField]
         [Range(0, 1)]
         private float _curvesDensity;
 
+        [Header("Empty hexes")]
+
+        [SerializeField]
+        [Range(0,20)]
+        private int _minEmptyHexes;
+
+        [SerializeField]
+        [Range(0,20)]
+        private int _maxEmptyHexes;
+
         [SerializeField]
         [Range(0, 1)]
-        private float _emptyHexDensity;
+        private float _emptyHexDensityRandomization;
 
         public int Width { get => _width; }
-        public int Height { get => _height; }
         public float HexEdgeLength { get => _hexEdgeLength; }
         public float SpaceBetweenHexes { get => _spaceBetweenHexes; }
         public int NumberOfCurves { get => Mathf.FloorToInt(_curvesDensity * _width); }
-        public int EmptyHexDensity { get => Mathf.FloorToInt(_emptyHexDensity * _height); }
+        public int RandomHexCount 
+        {
+            get
+            {
+                int center = _maxEmptyHexes - _minEmptyHexes;
+                return Mathf.Clamp(Random.Range(center - Mathf.FloorToInt(_emptyHexDensityRandomization * center), center + Mathf.FloorToInt(_emptyHexDensityRandomization * center)), _minEmptyHexes, _maxEmptyHexes);
+            }
+        }
     }
 }

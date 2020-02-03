@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Test hex map
   m_EditorClassIdentifier: 
   _width: 12
-  _height: 12
   _hexEdgeLength: 1
   _spaceBetweenHexes: 0.03
   _curvesDensity: 1
-  _emptyHexDensity: 0
+  _minEmptyHexes: 0
+  _maxEmptyHexes: 5
+  _emptyHexDensityRandomization: 0.247
