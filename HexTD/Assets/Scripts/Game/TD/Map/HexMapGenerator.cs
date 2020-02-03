@@ -194,7 +194,9 @@ namespace Game.TD.Map
             for (int i = 0; i < _hexPathParent.childCount; i++)
             {
                 int emptyHexCount = _hexMapSO.RandomHexCount;
-                int hexesToTopCount = UnityEngine.Random.Range(0, emptyHexCount);
+                int center = emptyHexCount / 2;
+                int randomization = Mathf.FloorToInt(_hexMapSO.TopDownDiversity * center);
+                int hexesToTopCount = Mathf.Clamp(UnityEngine.Random.Range(center - randomization, center + randomization), -emptyHexCount, emptyHexCount);
                 for (int j = 0; j < emptyHexCount; j++)
                 {
                     if (j < hexesToTopCount)

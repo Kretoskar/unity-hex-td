@@ -41,6 +41,10 @@ namespace Game.TD.Map
         [Range(0, 1)]
         private float _emptyHexDensityRandomization;
 
+        [SerializeField]
+        [Range(0, 1)]
+        private float _topDownDiversity;
+
         public int Width { get => _width; }
         public float HexEdgeLength { get => _hexEdgeLength; }
         public float SpaceBetweenHexes { get => _spaceBetweenHexes; }
@@ -53,5 +57,7 @@ namespace Game.TD.Map
                 return Mathf.Clamp(Random.Range(center - Mathf.FloorToInt(_emptyHexDensityRandomization * center), center + Mathf.FloorToInt(_emptyHexDensityRandomization * center)), _minEmptyHexes, _maxEmptyHexes);
             }
         }
+
+        public float TopDownDiversity { get => _topDownDiversity; set => _topDownDiversity = value; }
     }
 }

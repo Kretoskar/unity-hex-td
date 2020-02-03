@@ -16,6 +16,7 @@ MonoBehaviour:
   _hexEdgeLength: 1
   _spaceBetweenHexes: 0.1
   _curvesDensity: 1
-  _minEmptyHexes: 5
-  _maxEmptyHexes: 10
+  _minEmptyHexes: 10
+  _maxEmptyHexes: 20
   _emptyHexDensityRandomization: 0
+  _topDownDiversity: 0
