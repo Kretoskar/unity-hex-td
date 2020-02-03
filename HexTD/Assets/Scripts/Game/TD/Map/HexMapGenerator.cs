@@ -83,7 +83,6 @@ namespace Game.TD.Map
                     //Spawn straight path
                     SpawnStraightPathHex();
                 }
-                print(_lastPos.x);
             }
         }
 
@@ -93,40 +92,14 @@ namespace Game.TD.Map
             hex.name = "Path entrance hes";
             _lastPos = _hexMap.EntrancePosition();
             hex.transform.position = _lastPos;
-            _currentPathEntrancePosition = PathEntrancePosition.Center;
+            _currentPathEntrancePosition = PathEntrancePosition.CenterLeft;
         }
 
         private void SpawnCurvedPathHex()
         {
             GameObject prefab;
-            bool isCurvedToTop = false;
-            PathEntrancePosition _pathEntrancePositionForThisHex = _currentPathEntrancePosition;
-
-            //Spawn curved path
-            switch (_currentPathEntrancePosition)
-            {
-                case (PathEntrancePosition.Upper):
-                    isCurvedToTop = true;
-                    _currentPathEntrancePosition = PathEntrancePosition.Center;
-                    break;
-                case (PathEntrancePosition.Center):
-                    isCurvedToTop = UnityEngine.Random.Range(0, 2) == 0;
-                    if (isCurvedToTop)
-                    {
-                        _currentPathEntrancePosition = PathEntrancePosition.Lower;
-                    }
-                    else
-                    {
-                        _currentPathEntrancePosition = PathEntrancePosition.Upper;
-                    }
-                    break;
-                case (PathEntrancePosition.Lower):
-                    isCurvedToTop = false;
-                    _currentPathEntrancePosition = PathEntrancePosition.Center;
-                    break;
-                default:
-                    break;
-            }
+            bool isCurvedToTop = UnityEngine.Random.Range(0,2) == 0;
+            PathEntrancePosition pathEntrancePositionForThisHex = _currentPathEntrancePosition;
 
             if (isCurvedToTop)
             {
@@ -137,22 +110,38 @@ namespace Game.TD.Map
                 prefab = _curveDownPathHexPrefab;
             }
 
+            _currentPathEntrancePosition = NextPathEntrance(isCurvedToTop);
+
             GameObject curvePathHex = Instantiate(prefab, _hexPathParent);
             GameObject pathGO = curvePathHex.transform.GetChild(1).gameObject;
 
-            switch (_pathEntrancePositionForThisHex)
+            print("Entrance for this hex: " + pathEntrancePositionForThisHex);
+
+            switch (pathEntrancePositionForThisHex)
             {
-                case (PathEntrancePosition.Upper):
+                case (PathEntrancePosition.UpperLeft):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 60);
                     _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.LowRight);
                     break;
-                case (PathEntrancePosition.Center):
+                case (PathEntrancePosition.CenterLeft):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 0);
                     _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.Right);
                     break;
-                case (PathEntrancePosition.Lower):
+                case (PathEntrancePosition.LowerLeft):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, -60);
                     _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.TopRight);
+                    break;
+                case (PathEntrancePosition.UpperRight):
+                    pathGO.transform.rotation = Quaternion.Euler(-90, 0, isCurvedToTop ? 0 : -120) ;
+                    _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.LowLeft);
+                    break;
+                case (PathEntrancePosition.CenterRight):
+                    pathGO.transform.rotation = Quaternion.Euler(-90, 0, isCurvedToTop ? 60 : -60);
+                    _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.Left);
+                    break;
+                case (PathEntrancePosition.LowerRight):
+                    pathGO.transform.rotation = Quaternion.Euler(-90, 0, isCurvedToTop ? 120 : 0);
+                    _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.TopLeft);
                     break;
                 default:
                     break;
@@ -165,20 +154,34 @@ namespace Game.TD.Map
             GameObject pathHex = Instantiate(_straightPathHexPrefab, _hexPathParent);
             pathHex.name = "Straight path hex";
 
+            print("Entrance for this hex: " + _currentPathEntrancePosition);
+
             GameObject pathGO = pathHex.transform.GetChild(1).gameObject;
             switch (_currentPathEntrancePosition)
             {
-                case (PathEntrancePosition.Upper):
+                case (PathEntrancePosition.UpperLeft):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 0);
                     _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.LowRight);
                     break;
-                case (PathEntrancePosition.Center):
+                case (PathEntrancePosition.CenterLeft):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 120);
                     _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.Right);
                     break;
-                case (PathEntrancePosition.Lower):
+                case (PathEntrancePosition.LowerLeft):
                     pathGO.transform.rotation = Quaternion.Euler(-90, 0, 60);
                     _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.TopRight);
+                    break;
+                case (PathEntrancePosition.UpperRight):
+                    pathGO.transform.rotation = Quaternion.Euler(-90, 0, 60);
+                    _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.LowLeft);
+                    break;
+                case (PathEntrancePosition.CenterRight):
+                    pathGO.transform.rotation = Quaternion.Euler(-90, 0, 120);
+                    _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.Left);
+                    break;
+                case (PathEntrancePosition.LowerRight):
+                    pathGO.transform.rotation = Quaternion.Euler(-90, 0, 0);
+                    _hexMap.MoveIndexes(ref _lastPos, HexMap.MoveDirection.TopLeft);
                     break;
                 default:
                     break;
@@ -301,11 +304,33 @@ namespace Game.TD.Map
             }
         }
 
+        private PathEntrancePosition NextPathEntrance(bool isCurvedToTop)
+        {
+            int posIndex = (int)_currentPathEntrancePosition;
+            int nexPos;
+            if (posIndex == 1 || posIndex > 4)
+            {
+                nexPos = isCurvedToTop ? posIndex - 1 : posIndex + 1;
+            }
+            else
+            {
+                nexPos = isCurvedToTop ? posIndex + 1 : posIndex - 1;
+            }
+            if (nexPos == 7)
+                nexPos = 1;
+            if (nexPos == 0)
+                nexPos = 6;
+            return (PathEntrancePosition)nexPos;
+        }
+
         private enum PathEntrancePosition
         {
-            Upper,
-            Center,
-            Lower
+            UpperLeft = 1,
+            CenterLeft = 6,
+            LowerLeft = 5,
+            UpperRight = 2,
+            CenterRight = 3,
+            LowerRight = 4
         }
     }
 }
