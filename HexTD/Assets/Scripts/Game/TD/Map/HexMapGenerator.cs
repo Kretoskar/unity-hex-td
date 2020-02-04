@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Game.TD.Camera;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,12 @@ namespace Game.TD.Map
         [SerializeField]
         private HexMapSO _hexMapSO;
 
-        private float _distanceBetweenHexesX = 1.5f;
         private Vector2 _lastPos;
         private Transform _hexPathParent;
         private Transform _emptyHexParent;
         private PathEntrancePosition _currentPathEntrancePosition;
         private HexMap _hexMap;
+        private TDCamera _tdCam;
 
         #region injected from scriptable objects
 
@@ -38,6 +39,8 @@ namespace Game.TD.Map
 
         private void Start()
         {
+            _tdCam = FindObjectOfType<TDCamera>();
+
             GameObject hexParentGO = new GameObject("Hex path");
             hexParentGO.transform.parent = transform;
             _hexPathParent = hexParentGO.transform;
@@ -49,6 +52,8 @@ namespace Game.TD.Map
             GenerateHexMapObject();
             SpawnPath();
             SpawnEmptyHexes();
+
+            _tdCam.SetupCameraPosition(_hexMap);
         }
 
         private void InjectDataFromScriptableObject()

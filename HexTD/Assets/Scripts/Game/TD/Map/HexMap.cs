@@ -26,7 +26,12 @@ namespace Game.TD.Map
         private float _hexEdgeLength;
         private float _spaceBetweenHexes;
 
+        private Vector2 _maxXZ = new Vector2();
+        private Vector2 _minXZ = new Vector2();
+
         public int Width { get => _width; set => _width = value; }
+        public Vector2 MaxXZ { get => _maxXZ; set => _maxXZ = value; }
+        public Vector2 MinXZ { get => _minXZ; set => _minXZ = value; }
 
         public HexMap(GameObject emptyHexPrefab, GameObject straightPathHexPrefab, GameObject curveUpPathHexPrefab, GameObject curveDownPathHexPrefab, 
             int width, int numberOfCurves, float hexEdgeLength, float spaceBetweenHexes)
@@ -46,6 +51,14 @@ namespace Game.TD.Map
             float xPos = 0, yPos = 0, zPos = 0;
             xPos = indexes.x * _h * 2 + indexes.y * _h + indexes.x * _spaceBetweenHexes + indexes.y * _spaceBetweenHexes / 2;
             zPos = indexes.y * _y + indexes.y * _spaceBetweenHexes;
+            if (xPos < _minXZ.x)
+                _minXZ.x = xPos;
+            if (xPos > _maxXZ.x)
+                _maxXZ.x = xPos;
+            if (zPos < _minXZ.y)
+                _minXZ.y = zPos;
+            if (zPos > _maxXZ.y)
+                _maxXZ.y = zPos;
             return new Vector3(xPos, yPos, zPos);
         }
 
