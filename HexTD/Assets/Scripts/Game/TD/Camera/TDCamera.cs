@@ -8,7 +8,7 @@ namespace Game.TD.Camera
     public class TDCamera : MonoBehaviour
     {
         [SerializeField]
-        private GameObject _cameraPrefab;
+        private GameObject _cameraPrefab = null;
 
         [SerializeField]
         [Range(-500,500)]

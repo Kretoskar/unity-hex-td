@@ -10,16 +10,19 @@ namespace Game.TD.Map
     public class HexMapGenerator : MonoBehaviour
     {
         [SerializeField]
-        private HexTypesSO _hexTypesSO;
+        private HexTypesSO _hexTypesSO = null;
         [SerializeField]
-        private HexMapSO _hexMapSO;
+        private HexMapSO _hexMapSO = null;
 
+        private List<Waypoint> _waypoints = new List<Waypoint>();
         private Vector2 _lastPos;
         private Transform _hexPathParent;
         private Transform _emptyHexParent;
         private PathEntrancePosition _currentPathEntrancePosition;
         private HexMap _hexMap;
         private TDCamera _tdCam;
+
+        public List<Waypoint> Waypoints { get => _waypoints; set => _waypoints = value; }
 
         #region injected from scriptable objects
 
@@ -98,6 +101,7 @@ namespace Game.TD.Map
             _lastPos = _hexMap.EntrancePosition();
             hex.transform.position = _lastPos;
             _currentPathEntrancePosition = PathEntrancePosition.CenterLeft;
+            _waypoints.Add(hex.GetComponentInChildren<Waypoint>());
         }
 
         private void SpawnCurvedPathHex()
@@ -119,8 +123,6 @@ namespace Game.TD.Map
 
             GameObject curvePathHex = Instantiate(prefab, _hexPathParent);
             GameObject pathGO = curvePathHex.transform.GetChild(1).gameObject;
-
-            print("Entrance for this hex: " + pathEntrancePositionForThisHex);
 
             switch (pathEntrancePositionForThisHex)
             {
@@ -152,14 +154,13 @@ namespace Game.TD.Map
                     break;
             }
             curvePathHex.transform.position = _hexMap.HexPosition(_lastPos);
+            _waypoints.Add(curvePathHex.GetComponentInChildren<Waypoint>());
         }
 
         private void SpawnStraightPathHex()
         {
             GameObject pathHex = Instantiate(_straightPathHexPrefab, _hexPathParent);
             pathHex.name = "Straight path hex";
-
-            print("Entrance for this hex: " + _currentPathEntrancePosition);
 
             GameObject pathGO = pathHex.transform.GetChild(1).gameObject;
             switch (_currentPathEntrancePosition)
@@ -192,6 +193,7 @@ namespace Game.TD.Map
                     break;
             }
             pathHex.transform.position = _hexMap.HexPosition(_lastPos);
+            _waypoints.Add(pathHex.GetComponentInChildren<Waypoint>());
         }
 
         private void SpawnEmptyHexes()
